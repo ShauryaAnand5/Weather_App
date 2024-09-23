@@ -23,7 +23,8 @@ const WeatherDashboard = () => {
   }, [city]);
 
   const fetchWeatherData = async (city) => {
-    const API_KEY = 'cc15975064f05a99cdc6aa336e9aa2d0';
+    const API_KEY = import.meta.env.VITE_API_KEY;
+
     
     const cachedData = cachedCities.find(c => c.city === city);
     if (cachedData) {
