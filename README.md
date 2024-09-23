@@ -56,5 +56,4 @@ A responsive weather dashboard built with React.js that displays current weather
 
 ## Running the Application
 
-    ```bash
     npm run dev
