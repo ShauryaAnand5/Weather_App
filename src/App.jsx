@@ -8,28 +8,57 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import axios from "axios";
 
+const MAX_CACHED_CITIES = 5;
+
 const WeatherDashboard = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [city, setCity] = useState('Mumbai');
   const [fiveDayForecast, setFiveDayForecast] = useState(null);
+  const [cachedCities, setCachedCities] = useState([]);
+
   useEffect(() => {
+    const savedCities = JSON.parse(localStorage.getItem('cachedCities')) || [];
+    setCachedCities(savedCities);
     fetchWeatherData(city);
   }, [city]);
 
-  const fetchWeatherData = (city) => {
+  const fetchWeatherData = async (city) => {
     const API_KEY = 'cc15975064f05a99cdc6aa336e9aa2d0';
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`)
-      .then(response => response.json())
-      .then(data => {
-        setWeatherData(data);
-        console.log(JSON.stringify(data));
-        axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`)
-          .then(response => {
-            setFiveDayForecast(response.data);
-          })
-          .catch(error => console.error('Error fetching the 5-day forecast data:', error));
-      })
-      .catch(error => console.error('Error fetching the weather data:', error));
+    
+    const cachedData = cachedCities.find(c => c.city === city);
+    if (cachedData) {
+      setWeatherData(cachedData.weatherData);
+      setFiveDayForecast(cachedData.fiveDayForecast);
+      return;
+    }
+
+    try {
+      const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`);
+      const weatherData = await weatherResponse.json();
+      setWeatherData(weatherData);
+
+      const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`);
+      const fiveDayForecast = forecastResponse.data;
+
+      setFiveDayForecast(fiveDayForecast);
+
+      updateCache(city, weatherData, fiveDayForecast);
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+    }
+  };
+
+  const updateCache = (city, weatherData, fiveDayForecast) => {
+    const newCacheEntry = { city, weatherData, fiveDayForecast };
+    let updatedCachedCities = cachedCities.filter(c => c.city !== city); 
+    updatedCachedCities.unshift(newCacheEntry); 
+
+    if (updatedCachedCities.length > MAX_CACHED_CITIES) {
+      updatedCachedCities.pop(); 
+    }
+
+    setCachedCities(updatedCachedCities);
+    localStorage.setItem('cachedCities', JSON.stringify(updatedCachedCities));
   };
 
   const handleSearch = (searchedCity) => {
