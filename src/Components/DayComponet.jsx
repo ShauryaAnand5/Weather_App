@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Typography, Grid } from "@mui/material";
 
 const DayComponent = ({ props }) => {
-    console.log(props.dt);
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return new Intl.DateTimeFormat("en-GB", {
