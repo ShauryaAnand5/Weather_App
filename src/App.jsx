@@ -12,7 +12,7 @@ const MAX_CACHED_CITIES = 5;
 
 const WeatherDashboard = () => {
   const [weatherData, setWeatherData] = useState(null);
-  const [city, setCity] = useState('Mumbai');
+  const [city, setCity] = useState('mumbai');
   const [fiveDayForecast, setFiveDayForecast] = useState(null);
   const [cachedCities, setCachedCities] = useState([]);
 
