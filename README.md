@@ -55,7 +55,7 @@ A responsive weather dashboard built with React.js that displays current weather
 
 4. Set up .env file
    ```bash
-   VITE_API_KEY= your openweathermap api
+   VITE_API_KEY= your openweathermap api key
 
 ## Running the Application
 
