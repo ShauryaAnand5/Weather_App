@@ -36,6 +36,9 @@ const WeatherDashboard = () => {
     try {
       const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`);
       const weatherData = await weatherResponse.json();
+      if (weatherResponse.status !== 200) {
+        throw new Error(weatherData.message || "City not found");
+      }
       setWeatherData(weatherData);
 
       const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}`);
@@ -46,6 +49,7 @@ const WeatherDashboard = () => {
       updateCache(city, weatherData, fiveDayForecast);
     } catch (error) {
       console.error('Error fetching weather data:', error);
+      alert('Error: ' + error.message);
     }
   };
 
