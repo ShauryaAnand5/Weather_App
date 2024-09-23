@@ -1,16 +1,8 @@
 import React from "react";
 import { Box, Typography, Grid } from "@mui/material";
+import DayComponent from "./DayComponet";
 
 const FiveDaysForecast = ({ forecastData }) => {
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-GB", {
-      weekday: "short",
-      day: "2-digit",
-      month: "short",
-    }).format(date);
-  };
-
   return (
     <Box
       sx={{
@@ -34,26 +26,7 @@ const FiveDaysForecast = ({ forecastData }) => {
               // px: "1px"
             }}
           >
-            <Grid item xs={3}>
-              <Typography variant="body2" fontWeight="bold" textAlign="left">
-                {formatDate(item.dt_txt)}
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography variant="body2" fontWeight="bold" textAlign="left">
-                Min Temp - {Math.round(item.main.temp_min)} °C
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography variant="body2" fontWeight="bold" textAlign="left">
-                Max Temp - {Math.round(item.main.temp_max)} °C
-              </Typography>
-            </Grid>
-            <Grid item xs={3}>
-              <Typography variant="body2" textAlign="left">
-                {item.weather[0].description}
-              </Typography>
-            </Grid>
+            <DayComponent props={item} />
           </Grid>
         ))}
     </Box>
